@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "eNhQpYe6CFU=",
+  "dgSpecHash": "J/4u7ma2cOs=",
   "success": true,
   "projectFilePath": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\AppDeliveryApi.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Leo\\.nuget\\packages\\awssdk.core\\3.7.402.43\\awssdk.core.3.7.402.43.nupkg.sha512",
+    "C:\\Users\\Leo\\.nuget\\packages\\awssdk.s3\\3.7.416.13\\awssdk.s3.3.7.416.13.nupkg.sha512",
     "C:\\Users\\Leo\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Leo\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.14\\microsoft.aspnetcore.authentication.jwtbearer.8.0.14.nupkg.sha512",
     "C:\\Users\\Leo\\.nuget\\packages\\microsoft.entityframeworkcore\\9.0.1\\microsoft.entityframeworkcore.9.0.1.nupkg.sha512",

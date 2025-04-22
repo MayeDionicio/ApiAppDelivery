@@ -54,3 +54,6 @@ C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\bin\Debug\net8.0\Microso
 C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\obj\Debug\net8.0\AppDeliveryApi.sourcelink.json
+C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\bin\Debug\net8.0\AWSSDK.Core.dll
+C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\bin\Debug\net8.0\AWSSDK.S3.dll

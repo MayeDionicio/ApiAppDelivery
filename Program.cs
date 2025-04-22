@@ -3,24 +3,31 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AppDeliveryApi.Data;
+using AppDeliveryApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "https://deliverylp.shop")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy
+            .WithOrigins("http://localhost:4200", "https://deliverylp.shop")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); 
     });
 });
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -43,13 +50,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton<S3Service>();
+
 var app = builder.Build();
 
-app.UseCors("AllowFrontend");
 
 if (app.Environment.IsDevelopment())
 {
@@ -57,8 +66,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 
+app.UseCors("AllowFrontend");
+
+
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 

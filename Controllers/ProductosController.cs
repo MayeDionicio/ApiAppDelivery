@@ -1,6 +1,7 @@
 ﻿using AppDeliveryApi.Data;
 using AppDeliveryApi.DTOs;
 using AppDeliveryApi.Models;
+using AppDeliveryApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,13 +13,14 @@ namespace AppDeliveryApi.Controllers
     public class ProductosController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly S3Service _s3Service;
 
-        public ProductosController(AppDbContext context)
+        public ProductosController(AppDbContext context, S3Service s3Service)
         {
             _context = context;
+            _s3Service = s3Service;
         }
 
-        // GET: api/productos
         [HttpGet]
         public async Task<IActionResult> Listar()
         {
@@ -26,7 +28,6 @@ namespace AppDeliveryApi.Controllers
             return Ok(productos);
         }
 
-        // GET: api/productos/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> ObtenerPorId(int id)
         {
@@ -35,7 +36,6 @@ namespace AppDeliveryApi.Controllers
             return Ok(producto);
         }
 
-        // POST: api/productos
         [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Crear([FromBody] ProductoDTO dto)
@@ -54,7 +54,29 @@ namespace AppDeliveryApi.Controllers
             return Ok(new { mensaje = "Producto creado." });
         }
 
-        // PUT: api/productos/{id}
+        [Authorize(Roles = "admin")]
+        [HttpPost("RegistrarConImagen")]
+        public async Task<IActionResult> RegistrarConImagen([FromForm] ProductoDTO dto, IFormFile imagen)
+        {
+            if (imagen == null || imagen.Length == 0)
+                return BadRequest("Debe adjuntar una imagen.");
+
+            var imagenUrl = await _s3Service.SubirImagenAsync(imagen);
+
+            var nuevo = new Producto
+            {
+                Nombre = dto.Nombre,
+                Descripcion = dto.Descripcion,
+                Precio = dto.Precio,
+                Stock = dto.Stock,
+                ImagenUrl = imagenUrl
+            };
+
+            _context.Productos.Add(nuevo);
+            await _context.SaveChangesAsync();
+            return Ok(new { mensaje = "Producto creado con imagen.", urlImagen = imagenUrl });
+        }
+
         [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Editar(int id, [FromBody] ProductoDTO dto)
@@ -72,7 +94,6 @@ namespace AppDeliveryApi.Controllers
             return Ok(new { mensaje = "Producto actualizado." });
         }
 
-        // DELETE: api/productos/{id}
         [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Eliminar(int id)
