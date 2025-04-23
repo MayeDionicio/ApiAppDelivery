@@ -7,14 +7,11 @@ using AppDeliveryApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
 
-
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 
 builder.Services.AddCors(options =>
 {
@@ -24,10 +21,9 @@ builder.Services.AddCors(options =>
             .WithOrigins("http://localhost:4200", "https://deliverylp.shop")
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowCredentials(); 
+            .AllowCredentials();
     });
 });
-
 
 builder.Services.AddAuthentication(options =>
 {
@@ -50,7 +46,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -59,16 +54,32 @@ builder.Services.AddSingleton<S3Service>();
 
 var app = builder.Build();
 
-
-if (app.Environment.IsDevelopment())
+// ✅ Middleware global para ver errores en producción (500 detallado)
+app.UseExceptionHandler(errorApp =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
 
+        var error = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerPathFeature>();
+        if (error != null)
+        {
+            var ex = error.Error;
+            await context.Response.WriteAsync($"{{ \"error\": \"{ex.Message}\", \"stack\": \"{ex.StackTrace}\" }}");
+        }
+    });
+});
+
+// ✅ Habilitar Swagger en producción también
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "AppDelivery API V1");
+    c.RoutePrefix = "swagger";
+});
 
 app.UseCors("AllowFrontend");
-
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
