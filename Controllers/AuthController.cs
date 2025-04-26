@@ -7,7 +7,8 @@ using System.Text;
 using AppDeliveryApi.Data;
 using AppDeliveryApi.Models;
 using AppDeliveryApi.DTOs;
-using AppDeliveryApi.DTOs;
+using System.Net.Http;
+using System.Collections.Generic;
 
 namespace AppDeliveryApi.Controllers
 {
@@ -24,10 +25,14 @@ namespace AppDeliveryApi.Controllers
             _configuration = configuration;
         }
 
-        // ✅ Registro para usuarios normales (no admins)
+        
         [HttpPost("registrar")]
         public async Task<IActionResult> Registrar([FromBody] RegistroUsuarioDTO dto)
         {
+           
+            if (!await VerificarCaptchaAsync(dto.CaptchaToken))
+                return BadRequest(new { mensaje = "Captcha inválido." });
+
             if (await _context.Usuarios.AnyAsync(u => u.Email == dto.Email))
                 return BadRequest(new { mensaje = "El correo ya está registrado." });
 
@@ -40,7 +45,7 @@ namespace AppDeliveryApi.Controllers
                 ContrasenaHash = hash,
                 Direccion = dto.Direccion,
                 Telefono = dto.Telefono,
-                EsAdmin = false // 👈 siempre será usuario normal desde aquí
+                EsAdmin = false 
             };
 
             _context.Usuarios.Add(usuario);
@@ -49,7 +54,7 @@ namespace AppDeliveryApi.Controllers
             return Ok(new { mensaje = "Usuario registrado exitosamente." });
         }
 
-        // ✅ Login y generación de token
+        
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
@@ -71,7 +76,7 @@ namespace AppDeliveryApi.Controllers
             });
         }
 
-        // 🔐 Generar JWT con rol como claim
+      
         private string GenerarToken(Usuario usuario)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
@@ -81,7 +86,7 @@ namespace AppDeliveryApi.Controllers
             {
                 new Claim(JwtRegisteredClaimNames.Sub, usuario.UsuarioId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.EsAdmin ? "admin" : "usuario") // 👈 rol aquí
+                new Claim(ClaimTypes.Role, usuario.EsAdmin ? "admin" : "usuario")
             };
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -95,6 +100,23 @@ namespace AppDeliveryApi.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        
+        private async Task<bool> VerificarCaptchaAsync(string token)
+        {
+            var secret = _configuration["GoogleCaptcha:SecretKey"];
+            using var client = new HttpClient();
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("secret", secret),
+                new KeyValuePair<string, string>("response", token)
+            });
+
+            var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", content);
+            var json = await response.Content.ReadAsStringAsync();
+
+            return json.Contains("\"success\": true");
         }
     }
 }

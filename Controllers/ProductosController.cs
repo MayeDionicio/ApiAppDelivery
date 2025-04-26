@@ -54,28 +54,7 @@ namespace AppDeliveryApi.Controllers
             return Ok(new { mensaje = "Producto creado." });
         }
 
-        [Authorize(Roles = "admin")]
-        [HttpPost("RegistrarConImagen")]
-        public async Task<IActionResult> RegistrarConImagen([FromForm] ProductoDTO dto, IFormFile imagen)
-        {
-            if (imagen == null || imagen.Length == 0)
-                return BadRequest("Debe adjuntar una imagen.");
-
-            var imagenUrl = await _s3Service.SubirImagenAsync(imagen);
-
-            var nuevo = new Producto
-            {
-                Nombre = dto.Nombre,
-                Descripcion = dto.Descripcion,
-                Precio = dto.Precio,
-                Stock = dto.Stock,
-                ImagenUrl = imagenUrl
-            };
-
-            _context.Productos.Add(nuevo);
-            await _context.SaveChangesAsync();
-            return Ok(new { mensaje = "Producto creado con imagen.", urlImagen = imagenUrl });
-        }
+        
 
         [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
