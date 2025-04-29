@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AppDeliveryApi.Data;
 using AppDeliveryApi.Models;
+using AppDeliveryApi.DTOs;
 
 namespace AppDeliveryApi.Controllers
 {
@@ -17,7 +18,6 @@ namespace AppDeliveryApi.Controllers
             _context = context;
         }
 
-        
         [Authorize(Roles = "admin")]
         [HttpGet("listar")]
         public async Task<IActionResult> ListarUsuarios()
@@ -27,6 +27,7 @@ namespace AppDeliveryApi.Controllers
                     u.UsuarioId,
                     u.Nombre,
                     u.Email,
+                    u.Telefono,
                     u.EsAdmin
                 })
                 .ToListAsync();
@@ -34,19 +35,23 @@ namespace AppDeliveryApi.Controllers
             return Ok(usuarios);
         }
 
-        
         [Authorize(Roles = "admin")]
-        [HttpPut("asignar-admin/{id}")]
-        public async Task<IActionResult> AsignarAdmin(int id, [FromQuery] bool esAdmin)
+        [HttpPut("actualizar/{id}")]
+        public async Task<IActionResult> ActualizarUsuario(int id, [FromBody] EditarUsuarioDTO dto)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario == null)
-                return NotFound(new { mensaje = "Usuario no encontrado" });
+                return NotFound(new { mensaje = "Usuario no encontrado." });
 
-            usuario.EsAdmin = esAdmin;
+            usuario.Nombre = dto.Nombre;
+            usuario.Email = dto.Email;
+            usuario.Direccion = dto.Direccion;
+            usuario.Telefono = dto.Telefono;
+            usuario.EsAdmin = dto.EsAdmin;
+
             await _context.SaveChangesAsync();
 
-            return Ok(new { mensaje = $"Rol actualizado. Usuario ahora esAdmin: {usuario.EsAdmin}" });
+            return Ok(new { mensaje = "Usuario actualizado correctamente." });
         }
 
         [Authorize(Roles = "admin")]
@@ -62,6 +67,5 @@ namespace AppDeliveryApi.Controllers
 
             return Ok(new { mensaje = "Usuario eliminado correctamente." });
         }
-
     }
 }
