@@ -18,7 +18,6 @@ namespace AppDeliveryApi.Services
             var region = configuration["AwsS3:Region"];
 
             _s3Client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.GetBySystemName(region));
-
         }
 
         public async Task<string> SubirImagenAsync(IFormFile archivo)
@@ -35,10 +34,20 @@ namespace AppDeliveryApi.Services
                 ContentType = archivo.ContentType
             };
 
-
             await _s3Client.PutObjectAsync(request);
 
             return $"https://{_bucketName}.s3.amazonaws.com/{nombreArchivo}";
+        }
+
+        public async Task EliminarImagenAsync(string nombreArchivo)
+        {
+            var request = new DeleteObjectRequest
+            {
+                BucketName = _bucketName,
+                Key = nombreArchivo
+            };
+
+            await _s3Client.DeleteObjectAsync(request);
         }
     }
 }

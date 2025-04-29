@@ -5,6 +5,8 @@ using AppDeliveryApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace AppDeliveryApi.Controllers
 {
@@ -38,14 +40,21 @@ namespace AppDeliveryApi.Controllers
 
         [Authorize(Roles = "admin")]
         [HttpPost]
-        public async Task<IActionResult> Crear([FromBody] ProductoDTO dto)
+        public async Task<IActionResult> Crear([FromForm] ProductoDTO dto)
         {
+            string? imagenUrl = null;
+
+            if (dto.Imagen != null)
+            {
+                imagenUrl = await _s3Service.SubirImagenAsync(dto.Imagen);
+            }
+
             var nuevo = new Producto
             {
                 Nombre = dto.Nombre,
                 Descripcion = dto.Descripcion,
                 Precio = dto.Precio,
-                ImagenUrl = dto.ImagenUrl,
+                ImagenUrl = imagenUrl,
                 Stock = dto.Stock
             };
 
@@ -54,11 +63,9 @@ namespace AppDeliveryApi.Controllers
             return Ok(new { mensaje = "Producto creado." });
         }
 
-        
-
         [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Editar(int id, [FromBody] ProductoDTO dto)
+        public async Task<IActionResult> Editar(int id, [FromForm] ProductoDTO dto)
         {
             var producto = await _context.Productos.FindAsync(id);
             if (producto == null) return NotFound();
@@ -66,8 +73,20 @@ namespace AppDeliveryApi.Controllers
             producto.Nombre = dto.Nombre;
             producto.Descripcion = dto.Descripcion;
             producto.Precio = dto.Precio;
-            producto.ImagenUrl = dto.ImagenUrl;
             producto.Stock = dto.Stock;
+
+            if (dto.Imagen != null)
+            {
+                // Eliminar imagen anterior del bucket
+                if (!string.IsNullOrEmpty(producto.ImagenUrl))
+                {
+                    var nombreAnterior = Path.GetFileName(producto.ImagenUrl);
+                    await _s3Service.EliminarImagenAsync(nombreAnterior);
+                }
+
+                // Subir nueva imagen
+                producto.ImagenUrl = await _s3Service.SubirImagenAsync(dto.Imagen);
+            }
 
             await _context.SaveChangesAsync();
             return Ok(new { mensaje = "Producto actualizado." });
@@ -79,6 +98,13 @@ namespace AppDeliveryApi.Controllers
         {
             var producto = await _context.Productos.FindAsync(id);
             if (producto == null) return NotFound();
+
+            // Eliminar imagen si existe
+            if (!string.IsNullOrEmpty(producto.ImagenUrl))
+            {
+                var nombre = Path.GetFileName(producto.ImagenUrl);
+                await _s3Service.EliminarImagenAsync(nombre);
+            }
 
             _context.Productos.Remove(producto);
             await _context.SaveChangesAsync();
