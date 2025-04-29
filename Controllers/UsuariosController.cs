@@ -28,7 +28,8 @@ namespace AppDeliveryApi.Controllers
                     u.Nombre,
                     u.Email,
                     u.Telefono,
-                    u.EsAdmin
+                    u.EsAdmin,
+                    u.Direccion
                 })
                 .ToListAsync();
 
