@@ -49,7 +49,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<EmailService>();
 builder.Services.AddSingleton<S3Service>();
 
 var app = builder.Build();

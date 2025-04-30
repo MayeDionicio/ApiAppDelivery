@@ -28,6 +28,10 @@ namespace AppDeliveryApi.Data
 
             // 👇 Aquí asegurás que EF Core use el nombre exacto "productos" (en minúscula)
             modelBuilder.Entity<Producto>().ToTable("productos");
+            modelBuilder.Entity<Usuario>().ToTable("usuarios");
+            modelBuilder.Entity<Producto>().ToTable("productos");
+            modelBuilder.Entity<MetodoPago>().ToTable("metodos_pago");
+            modelBuilder.Entity<PedidoDetalle>().ToTable("pedido_detalles");
 
             // También podrías mapear otras tablas si las tenés en minúsculas:
             // modelBuilder.Entity<Usuario>().ToTable("usuarios");

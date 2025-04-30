@@ -15,5 +15,8 @@
         public int ProductoId { get; set; }
         public int Cantidad { get; set; }
         public decimal PrecioUnitario { get; set; }
+
+        // Para mostrar nombre del producto en el response (opcional)
+        public string? NombreProducto { get; set; }
     }
 }

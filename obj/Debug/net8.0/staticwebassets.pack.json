@@ -1,0 +1,45 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_35.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_35.png"
+    },
+    {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_36.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_36.png"
+    },
+    {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_37.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_37.png"
+    },
+    {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_38.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_38.png"
+    },
+    {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_39.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_39.png"
+    },
+    {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_40.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_40.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.AppDeliveryApi.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.AppDeliveryApi.props",
+      "PackagePath": "build\\AppDeliveryApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.AppDeliveryApi.props",
+      "PackagePath": "buildMultiTargeting\\AppDeliveryApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.AppDeliveryApi.props",
+      "PackagePath": "buildTransitive\\AppDeliveryApi.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
