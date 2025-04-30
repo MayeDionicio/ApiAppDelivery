@@ -1,11 +1,23 @@
-﻿namespace AppDeliveryApi.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace AppDeliveryApi.Models
 {
+    [Table("metodos_pago")]
     public class MetodoPago
     {
+        [Column("metodo_pago_id")]
         public int MetodoPagoId { get; set; }
+
+        [Column("usuario_id")]
         public int UsuarioId { get; set; }
+
+        [Column("tipo")]
         public string Tipo { get; set; }
-        public string Detalles { get; set; } // Podés usar un tipo más complejo si es JSON
+
+        [Column("detalles")]
+        public string Detalles { get; set; }
+
+        [Column("activo")]
         public bool Activo { get; set; }
 
         // Relación inversa (opcional)

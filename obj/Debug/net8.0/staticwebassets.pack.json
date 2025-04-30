@@ -25,6 +25,26 @@
       "PackagePath": "staticwebassets\\qr\\pedido_40.png"
     },
     {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_41.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_41.png"
+    },
+    {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_42.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_42.png"
+    },
+    {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_43.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_43.png"
+    },
+    {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_44.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_44.png"
+    },
+    {
+      "Id": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_45.png",
+      "PackagePath": "staticwebassets\\qr\\pedido_45.png"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.AppDeliveryApi.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },
