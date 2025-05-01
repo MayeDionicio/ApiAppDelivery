@@ -18,24 +18,35 @@ namespace AppDeliveryApi.Controllers
             _context = context;
         }
 
-        // ✅ Crear método de pago
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Crear([FromBody] MetodoPagoDTO dto)
         {
-            var metodo = new MetodoPago
+            try
             {
-                UsuarioId = dto.UsuarioId,
-                Tipo = dto.Tipo,
-                Detalles = dto.Detalles,
-                Activo = dto.Activo
-            };
+                var metodo = new MetodoPago
+                {
+                    UsuarioId = dto.UsuarioId,
+                    Tipo = dto.Tipo,
+                    Detalles = dto.Detalles,
+                    Activo = dto.Activo
+                };
 
-            _context.MetodosPago.Add(metodo);
-            await _context.SaveChangesAsync();
+                _context.MetodosPago.Add(metodo);
+                await _context.SaveChangesAsync();
 
-            return Ok(new { mensaje = "Método de pago registrado correctamente." });
+                return Ok(metodo);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    error = ex.Message,
+                    inner = ex.InnerException?.Message,
+                    stack = ex.StackTrace
+                });
+            }
         }
+
 
         // 📋 Listar todos los métodos de pago
         [HttpGet]
