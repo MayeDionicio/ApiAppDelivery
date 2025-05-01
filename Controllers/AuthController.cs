@@ -25,11 +25,10 @@ namespace AppDeliveryApi.Controllers
             _configuration = configuration;
         }
 
-        
+        // POST: /api/auth/registrar
         [HttpPost("registrar")]
         public async Task<IActionResult> Registrar([FromBody] RegistroUsuarioDTO dto)
         {
-           
             if (!await VerificarCaptchaAsync(dto.CaptchaToken))
                 return BadRequest(new { mensaje = "Captcha inválido." });
 
@@ -45,7 +44,7 @@ namespace AppDeliveryApi.Controllers
                 ContrasenaHash = hash,
                 Direccion = dto.Direccion,
                 Telefono = dto.Telefono,
-                EsAdmin = false 
+                EsAdmin = false
             };
 
             _context.Usuarios.Add(usuario);
@@ -54,7 +53,7 @@ namespace AppDeliveryApi.Controllers
             return Ok(new { mensaje = "Usuario registrado exitosamente." });
         }
 
-        
+        // POST: /api/auth/login
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
@@ -76,7 +75,7 @@ namespace AppDeliveryApi.Controllers
             });
         }
 
-      
+        // Generación del token JWT con usuarioId explícito
         private string GenerarToken(Usuario usuario)
         {
             var jwtSettings = _configuration.GetSection("Jwt");
@@ -85,6 +84,7 @@ namespace AppDeliveryApi.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, usuario.UsuarioId.ToString()),
+                new Claim("usuarioId", usuario.UsuarioId.ToString()), // 🔥 Aquí está el fix
                 new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
                 new Claim(ClaimTypes.Role, usuario.EsAdmin ? "admin" : "usuario")
             };
@@ -102,7 +102,7 @@ namespace AppDeliveryApi.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        
+        // Verifica reCAPTCHA con Google
         private async Task<bool> VerificarCaptchaAsync(string token)
         {
             var secret = _configuration["GoogleCaptcha:SecretKey"];
