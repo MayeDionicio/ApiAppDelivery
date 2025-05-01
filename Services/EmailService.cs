@@ -3,15 +3,18 @@ using MailKit.Security;
 using MimeKit;
 using MimeKit.Utils;
 using AppDeliveryApi.Models;
+using Microsoft.AspNetCore.Hosting;
 using System.Net.Mail;
 
 namespace AppDeliveryApi.Services
 {
     public class EmailService
     {
-        public EmailService()
+        private readonly IWebHostEnvironment _env;
+
+        public EmailService(IWebHostEnvironment env)
         {
-            // No se necesita IConfiguration
+            _env = env;
         }
 
         public async Task EnviarCorreoConQrYDetalle(Usuario usuario, Pedido pedido, List<PedidoDetalle> detalles, string rutaQr)
@@ -23,16 +26,20 @@ namespace AppDeliveryApi.Services
 
             var builder = new BodyBuilder();
 
+            // Generar tabla de productos
             string tablaHtml = "";
             foreach (var detalle in detalles)
             {
                 tablaHtml += $"<tr><td>{detalle.Producto.Nombre}</td><td>{detalle.Cantidad}</td><td>Q {detalle.PrecioUnitario:0.00}</td></tr>";
             }
 
+            // Adjuntar imagen QR
             var image = builder.LinkedResources.Add(rutaQr);
             image.ContentId = MimeUtils.GenerateMessageId();
 
-            string cuerpoHtml = File.ReadAllText("Templates/PlantillaCorreo.html")
+            // Cargar plantilla HTML correctamente usando ruta absoluta
+            var plantillaPath = Path.Combine(_env.ContentRootPath, "Templates", "PlantillaCorreo.html");
+            var cuerpoHtml = File.ReadAllText(plantillaPath)
                 .Replace("{{NOMBRE_CLIENTE}}", usuario.Nombre)
                 .Replace("{{ID_PEDIDO}}", pedido.PedidoId.ToString())
                 .Replace("{{TABLA_PRODUCTOS}}", tablaHtml)
@@ -93,7 +100,9 @@ namespace AppDeliveryApi.Services
 
             var builder = new BodyBuilder();
 
-            string cuerpoHtml = File.ReadAllText("Templates/EntregaConfirmada.html")
+            // Usar ruta absoluta para la plantilla
+            var plantillaPath = Path.Combine(_env.ContentRootPath, "Templates", "EntregaConfirmada.html");
+            var cuerpoHtml = File.ReadAllText(plantillaPath)
                 .Replace("{{NOMBRE_CLIENTE}}", usuario.Nombre)
                 .Replace("{{ID_PEDIDO}}", pedido.PedidoId.ToString());
 
