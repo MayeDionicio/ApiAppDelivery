@@ -249,9 +249,8 @@ namespace AppDeliveryApi.Controllers
             pedido.Estado = "Entregado";
             await _context.SaveChangesAsync();
 
-            await _emailService.EnviarCorreoBasico(pedido.Usuario.Email,
-                "📦 Pedido entregado",
-                $"Hola {pedido.Usuario.Nombre}, tu pedido #{pedido.PedidoId} fue entregado correctamente.");
+            await _emailService.EnviarCorreoEntregaHtml(pedido.Usuario, pedido);
+
 
             return Ok(new { mensaje = "Pedido entregado correctamente manualmente" });
         }

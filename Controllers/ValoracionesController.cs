@@ -4,6 +4,7 @@ using AppDeliveryApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace AppDeliveryApi.Controllers
 {
@@ -18,38 +19,48 @@ namespace AppDeliveryApi.Controllers
             _context = context;
         }
 
-        // POST: api/valoraciones
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Crear([FromBody] ValoracionDTO dto)
         {
-            var valoracion = new Valoracion
+            try
             {
-                ProductoId = dto.ProductoId,
-                UsuarioId = dto.UsuarioId,
-                Calificacion = dto.Calificacion,
-                Comentario = dto.Comentario,
-                Fecha = DateTime.UtcNow
-            };
+                var valoracion = new Valoracion
+                {
+                    ProductoId = dto.ProductoId,
+                    UsuarioId = dto.UsuarioId,
+                    Calificacion = dto.Calificacion,
+                    Comentario = dto.Comentario,
+                    Fecha = DateTime.UtcNow
+                };
 
-            _context.Valoraciones.Add(valoracion);
-            await _context.SaveChangesAsync();
+                _context.Valoraciones.Add(valoracion);
+                await _context.SaveChangesAsync();
 
-            return Ok(new { mensaje = "Valoración registrada exitosamente." });
+                return Ok(new { mensaje = "Valoración registrada exitosamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    error = ex.Message,
+                    inner = ex.InnerException?.Message
+                });
+            }
         }
 
-        // GET: api/valoraciones/producto/5
         [HttpGet("producto/{productoId}")]
         public async Task<IActionResult> ObtenerPorProducto(int productoId)
         {
             var valoraciones = await _context.Valoraciones
+                .Include(v => v.Producto)
+                .Include(v => v.Usuario)
                 .Where(v => v.ProductoId == productoId)
                 .ToListAsync();
 
             return Ok(valoraciones);
         }
 
-        // DELETE: api/valoraciones/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Eliminar(int id)

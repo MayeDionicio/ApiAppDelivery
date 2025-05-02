@@ -65,3 +65,5 @@ C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\obj\Debug\net8.0\refint\
 C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\obj\Debug\net8.0\AppDeliveryApi.pdb
 C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\obj\Debug\net8.0\AppDeliveryApi.genruntimeconfig.cache
 C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\obj\Debug\net8.0\ref\AppDeliveryApi.dll
+C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\bin\Debug\net8.0\Templates\EntregaConfirmada.html
+C:\Users\Leo\source\repos\AppDeliveryApi\AppDeliveryApi\bin\Debug\net8.0\Templates\PlantillaCorreo.html

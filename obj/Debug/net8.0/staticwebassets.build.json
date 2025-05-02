@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "ls8U3WhdZ9Oi7wHz48fhIQdm7mT9mHcJc/rrIUVNlJc=",
+  "Hash": "4VFEYLVJuYCaEtRbj99PS0Xd13NCDHIFpH3tGPm4z5E=",
   "Source": "AppDeliveryApi",
   "BasePath": "_content/AppDeliveryApi",
   "Mode": "Default",
@@ -224,6 +224,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\qr\\pedido_45.png"
+    },
+    {
+      "Identity": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\qr\\pedido_46.png",
+      "SourceId": "AppDeliveryApi",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Leo\\source\\repos\\AppDeliveryApi\\AppDeliveryApi\\wwwroot\\",
+      "BasePath": "_content/AppDeliveryApi",
+      "RelativePath": "qr/pedido_46.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\qr\\pedido_46.png"
     }
   ]
 }

@@ -10,7 +10,7 @@ namespace AppDeliveryApi.Data
         }
 
         public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Producto> Productos { get; set; } // 👈 Esto está bien, aunque en la BD sea "productos"
+        public DbSet<Producto> Productos { get; set; } 
         public DbSet<Pedido> Pedidos { get; set; }
 
         public DbSet<PedidoDetalle> PedidoDetalles { get; set; }
@@ -21,20 +21,21 @@ namespace AppDeliveryApi.Data
 
         public DbSet<Valoracion> Valoraciones { get; set; }
 
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // 👇 Aquí asegurás que EF Core use el nombre exacto "productos" (en minúscula)
+            
             modelBuilder.Entity<Producto>().ToTable("productos");
             modelBuilder.Entity<Usuario>().ToTable("usuarios");
             modelBuilder.Entity<Producto>().ToTable("productos");
             modelBuilder.Entity<MetodoPago>().ToTable("metodos_pago");
             modelBuilder.Entity<PedidoDetalle>().ToTable("pedido_detalles");
+            modelBuilder.Entity<Valoracion>().ToTable("valoraciones");
 
-            // También podrías mapear otras tablas si las tenés en minúsculas:
-            // modelBuilder.Entity<Usuario>().ToTable("usuarios");
+
         }
     }
 }
