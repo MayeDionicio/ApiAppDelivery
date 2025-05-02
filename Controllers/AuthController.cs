@@ -84,7 +84,8 @@ namespace AppDeliveryApi.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, usuario.UsuarioId.ToString()),
-                new Claim("usuarioId", usuario.UsuarioId.ToString()), // 🔥 Aquí está el fix
+                new Claim("usuarioId", usuario.UsuarioId.ToString()),
+                new Claim("id", usuario.UsuarioId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
                 new Claim(ClaimTypes.Role, usuario.EsAdmin ? "admin" : "usuario")
             };

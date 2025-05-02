@@ -28,6 +28,8 @@ namespace AppDeliveryApi.Models
         [Column("es_admin")]
         public bool EsAdmin { get; set; }
 
+        public string? FotoUrl { get; set; }
+
         [Column("fecha_creacion")]
         public DateTime FechaCreacion { get; set; } = DateTime.UtcNow;
     }

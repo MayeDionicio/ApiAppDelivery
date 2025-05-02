@@ -48,7 +48,19 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "AppDelivery API", Version = "v1" });
+
+    c.MapType<IFormFile>(() => new Microsoft.OpenApi.Models.OpenApiSchema
+    {
+        Type = "string",
+        Format = "binary"
+    });
+
+    
+});
+
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddSingleton<S3Service>();
 
@@ -77,6 +89,7 @@ app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "AppDelivery API V1");
     c.RoutePrefix = "swagger";
+    
 });
 
 app.UseCors("AllowFrontend");
