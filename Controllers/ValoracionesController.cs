@@ -4,7 +4,6 @@ using AppDeliveryApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
 
 namespace AppDeliveryApi.Controllers
 {
@@ -61,6 +60,31 @@ namespace AppDeliveryApi.Controllers
             return Ok(valoraciones);
         }
 
+        [HttpGet("producto/{productoId}/promedio")]
+        public async Task<IActionResult> ObtenerPromedio(int productoId)
+        {
+            var valoraciones = await _context.Valoraciones
+                .Where(v => v.ProductoId == productoId)
+                .ToListAsync();
+
+            if (!valoraciones.Any())
+            {
+                return Ok(new
+                {
+                    promedio = 0,
+                    total = 0
+                });
+            }
+
+            var promedio = valoraciones.Average(v => v.Calificacion);
+
+            return Ok(new
+            {
+                promedio = Math.Round(promedio, 1),
+                total = valoraciones.Count
+            });
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Eliminar(int id)
@@ -76,3 +100,4 @@ namespace AppDeliveryApi.Controllers
         }
     }
 }
+
