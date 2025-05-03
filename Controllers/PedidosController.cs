@@ -21,6 +21,10 @@ namespace AppDeliveryApi.Controllers
 
         private const string ClaveQr = "12345678901234567890123456789012"; // 32 bytes
 
+        // Coordenadas fijas del negocio en Escuintla
+        private const double StoreLat = 14.2978;
+        private const double StoreLng = -90.7869;
+
         public PedidosController(AppDbContext context, IWebHostEnvironment env, EmailService emailService)
         {
             _context = context;
@@ -44,7 +48,13 @@ namespace AppDeliveryApi.Controllers
                     Total = dto.Total,
                     Estado = dto.Estado,
                     FechaPedido = DateTime.SpecifyKind(dto.FechaPedido, DateTimeKind.Utc),
-                    MetodoPagoId = dto.MetodoPagoId
+                    MetodoPagoId = dto.MetodoPagoId,
+
+                    // Coordenadas fijas del negocio (Escuintla) + cliente
+                    StoreLat = StoreLat,
+                    StoreLng = StoreLng,
+                    CustomerLat = dto.CustomerLat,
+                    CustomerLng = dto.CustomerLng
                 };
 
                 _context.Pedidos.Add(nuevoPedido);
@@ -112,6 +122,10 @@ namespace AppDeliveryApi.Controllers
                 Total = p.Total,
                 Estado = p.Estado,
                 FechaPedido = p.FechaPedido,
+                StoreLat = p.StoreLat,
+                StoreLng = p.StoreLng,
+                CustomerLat = p.CustomerLat,
+                CustomerLng = p.CustomerLng,
                 Usuario = new UsuarioSimpleDTO
                 {
                     UsuarioId = p.Usuario.UsuarioId,
@@ -154,6 +168,10 @@ namespace AppDeliveryApi.Controllers
                 Total = p.Total,
                 Estado = p.Estado,
                 FechaPedido = p.FechaPedido,
+                StoreLat = p.StoreLat,
+                StoreLng = p.StoreLng,
+                CustomerLat = p.CustomerLat,
+                CustomerLng = p.CustomerLng,
                 Usuario = new UsuarioSimpleDTO
                 {
                     UsuarioId = p.Usuario.UsuarioId,
@@ -188,7 +206,6 @@ namespace AppDeliveryApi.Controllers
                     return BadRequest(new { mensaje = "QR inválido" });
 
                 var id = int.Parse(desencriptado.Split("/").Last());
-
                 return await EntregarConQr(id);
             }
             catch
@@ -221,8 +238,6 @@ namespace AppDeliveryApi.Controllers
             await _context.SaveChangesAsync();
 
             await _emailService.EnviarCorreoEntregaHtml(pedido.Usuario, pedido);
-
-
             return Ok(new { mensaje = "Pedido entregado correctamente vía QR" });
         }
 
@@ -250,8 +265,6 @@ namespace AppDeliveryApi.Controllers
             await _context.SaveChangesAsync();
 
             await _emailService.EnviarCorreoEntregaHtml(pedido.Usuario, pedido);
-
-
             return Ok(new { mensaje = "Pedido entregado correctamente manualmente" });
         }
 
@@ -274,7 +287,7 @@ namespace AppDeliveryApi.Controllers
             using var qrGenerator = new QRCodeGenerator();
             using var qrData = qrGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
             using var qrCode = new PngByteQRCode(qrData);
-            return qrCode.GetGraphic(10); // tamaño más pequeño
+            return qrCode.GetGraphic(10);
         }
 
         private string EncriptarQr(string texto)

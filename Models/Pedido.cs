@@ -13,7 +13,7 @@ public class Pedido
     [Column("total")]
     public decimal Total { get; set; }
 
-    [Column("estado")] 
+    [Column("estado")]
     public string Estado { get; set; }
 
     [Column("fecha_pedido")]
@@ -21,6 +21,19 @@ public class Pedido
 
     [Column("metodo_pago_id")]
     public int MetodoPagoId { get; set; }
+
+    // ✅ Nuevas columnas de coordenadas
+    [Column("store_lat")]
+    public double? StoreLat { get; set; }
+
+    [Column("store_lng")]
+    public double? StoreLng { get; set; }
+
+    [Column("customer_lat")]
+    public double? CustomerLat { get; set; }
+
+    [Column("customer_lng")]
+    public double? CustomerLng { get; set; }
 
     public Usuario Usuario { get; set; }
     public MetodoPago MetodoPago { get; set; }
