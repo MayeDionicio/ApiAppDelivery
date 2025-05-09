@@ -75,16 +75,14 @@ namespace AppDeliveryApi.Controllers
             producto.Precio = dto.Precio;
             producto.Stock = dto.Stock;
 
-            if (dto.Imagen != null)
+            if (dto.Imagen != null && dto.Imagen.Length > 0)
             {
-                // Eliminar imagen anterior del bucket
                 if (!string.IsNullOrEmpty(producto.ImagenUrl))
                 {
                     var nombreAnterior = Path.GetFileName(producto.ImagenUrl);
-                    await _s3Service.EliminarImagenAsync(nombreAnterior);
+                    await _s3Service.EliminarImagenAsync(producto.ImagenUrl);
                 }
 
-                // Subir nueva imagen
                 producto.ImagenUrl = await _s3Service.SubirImagenAsync(dto.Imagen);
             }
 
@@ -99,11 +97,10 @@ namespace AppDeliveryApi.Controllers
             var producto = await _context.Productos.FindAsync(id);
             if (producto == null) return NotFound();
 
-            // Eliminar imagen si existe
             if (!string.IsNullOrEmpty(producto.ImagenUrl))
             {
                 var nombre = Path.GetFileName(producto.ImagenUrl);
-                await _s3Service.EliminarImagenAsync(nombre);
+                await _s3Service.EliminarImagenAsync(producto.ImagenUrl);
             }
 
             _context.Productos.Remove(producto);
