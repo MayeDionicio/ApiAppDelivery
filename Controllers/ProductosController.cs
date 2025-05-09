@@ -42,6 +42,11 @@ namespace AppDeliveryApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Crear([FromForm] ProductoDTO dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             string? imagenUrl = null;
 
             if (dto.Imagen != null)
@@ -67,6 +72,11 @@ namespace AppDeliveryApi.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Editar(int id, [FromForm] ProductoDTO dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var producto = await _context.Productos.FindAsync(id);
             if (producto == null) return NotFound();
 
