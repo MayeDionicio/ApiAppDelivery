@@ -13,12 +13,10 @@ namespace AppDeliveryApi.Services
         {
             _configuration = configuration;
 
-            // 🔐 Leer claves de entorno o fallback a appsettings
             var accessKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY_ID") ?? configuration["AwsS3:AccessKey"];
             var secretKey = Environment.GetEnvironmentVariable("AWS_SECRET_ACCESS_KEY") ?? configuration["AwsS3:SecretKey"];
             var region = configuration["AwsS3:Region"];
 
-            // ✅ Validaciones claras para debug
             if (string.IsNullOrEmpty(accessKey))
                 throw new Exception("⚠️ AWS_ACCESS_KEY_ID no está configurado.");
             if (string.IsNullOrEmpty(secretKey))
@@ -64,6 +62,13 @@ namespace AppDeliveryApi.Services
             if (string.IsNullOrEmpty(bucket))
                 throw new Exception($"⚠️ Bucket no configurado para tipo '{tipo}'.");
 
+            if (string.IsNullOrWhiteSpace(urlImagen) ||
+                !Uri.IsWellFormedUriString(urlImagen, UriKind.Absolute))
+            {
+                Console.WriteLine($"⚠️ URL inválida, no se intentará eliminar: '{urlImagen}'");
+                return;
+            }
+
             var uri = new Uri(urlImagen);
             var key = uri.AbsolutePath.TrimStart('/');
 
@@ -73,7 +78,15 @@ namespace AppDeliveryApi.Services
                 Key = key
             };
 
-            await _s3Client.DeleteObjectAsync(request);
+            try
+            {
+                await _s3Client.DeleteObjectAsync(request);
+                Console.WriteLine($"✅ Imagen eliminada: {key}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error al eliminar imagen: {ex.Message}");
+            }
         }
     }
 }
